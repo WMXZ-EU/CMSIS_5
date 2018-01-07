@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -15,14 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Date:        7. Mar 2014
- * $Revision:    V2.00
+ * $Date:        2. Feb 2017
+ * $Revision:    V2.1
  *
  * Project:      Ethernet PHY (Physical Transceiver) Driver definitions
  */
 
 /* History:
- *  Version 2.00
+ *  Version 2.1
+ *    ARM_ETH_LINK_INFO made volatile
+ *  Version 2.0
  *    changed parameter "mode" in function ARM_ETH_PHY_SetMode
  *    Changed prefix ARM_DRV -> ARM_DRIVER
  *    Changed return values of some functions to int32_t
@@ -32,12 +34,17 @@
  *    Initial release
  */
 
-#ifndef __DRIVER_ETH_PHY_H
-#define __DRIVER_ETH_PHY_H
+#ifndef DRIVER_ETH_PHY_H_
+#define DRIVER_ETH_PHY_H_
+
+#ifdef  __cplusplus
+extern "C"
+{
+#endif
 
 #include "Driver_ETH.h"
 
-#define ARM_ETH_PHY_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(2,00)  /* API version */
+#define ARM_ETH_PHY_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(2,1)  /* API version */
 
 
 #define _ARM_Driver_ETH_PHY_(n)      Driver_ETH_PHY##n
@@ -127,4 +134,8 @@ typedef struct _ARM_DRIVER_ETH_PHY {
   ARM_ETH_LINK_INFO  (*GetLinkInfo)  (void);                          ///< Pointer to \ref ARM_ETH_PHY_GetLinkInfo : Get Ethernet PHY Device Link information.
 } const ARM_DRIVER_ETH_PHY;
 
-#endif /* __DRIVER_ETH_PHY_H */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* DRIVER_ETH_PHY_H_ */

@@ -7,7 +7,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -398,7 +398,7 @@ int32_t Audio_Uninitialize (void) {
 
   // Abort SAI Send and receive
   ptrSAI->Control (ARM_SAI_ABORT_SEND,    0U, 0U);
-  ptrSAI->Control (ARM_SAI_ABORT_RECEIVE, 0U, 0u);
+  ptrSAI->Control (ARM_SAI_ABORT_RECEIVE, 0U, 0U);
 
   // Disable clocks: ADC, DEC, DAC,INT
   if (UDA1380_RegWrite (REG_CLOCK_SETTINGS, 0U) == -1) { return -1; }

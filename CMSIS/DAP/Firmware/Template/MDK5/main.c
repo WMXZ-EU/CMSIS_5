@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,7 +7,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -17,22 +17,23 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        20. May 2015
- * $Revision:    V1.10
+ * $Date:        1. December 2017
+ * $Revision:    V2.0.0
  *
  * Project:      CMSIS-DAP Template MDK5
- * Title:        main.c RTX CMSIS-DAP Main module
+ * Title:        main.c CMSIS-DAP Main module
  *
  *---------------------------------------------------------------------------*/
 
-#include "cmsis_os.h"
+#include "cmsis_os2.h"
 #include "osObjects.h"
 #include "rl_usb.h"
 #include "DAP_config.h"
 #include "DAP.h"
 
-// Main program
-int main (void) {
+// Application Main program
+__NO_RETURN void app_main (void *argument) {
+  (void)argument;
 
   DAP_Setup();                          // DAP Setup 
 
@@ -47,9 +48,24 @@ int main (void) {
   LED_RUNNING_OUT(0U);                  // Turn off Target Running LED
   LED_CONNECTED_OUT(0U);                // Turn off Debugger Connected LED
 
-  // Create HID Thread
-  HID0_ThreadId = osThreadCreate(osThread(HID0_Thread), NULL);
+  // Create DAP Thread
+  DAP_ThreadId = osThreadNew(DAP_Thread, NULL, &DAP_ThreadAttr);
 
-  osThreadSetPriority(osThreadGetId(), osPriorityIdle);
-  for (;;);                             // Endless Loop
+  // Create SWO Thread
+  SWO_ThreadId = osThreadNew(SWO_Thread, NULL, &SWO_ThreadAttr);
+
+  osDelay(osWaitForever);
+  for (;;) {};
+}
+
+int main (void) {
+
+  SystemCoreClockUpdate();
+  osKernelInitialize();                 // Initialize CMSIS-RTOS
+  osThreadNew(app_main, NULL, NULL);    // Create application main thread
+  if (osKernelGetState() == osKernelReady) {
+    osKernelStart();                    // Start thread execution
+  }
+
+  for (;;) {};
 }

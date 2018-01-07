@@ -2,7 +2,7 @@
  * @file     partition_ARMv8MBL.h
  * @brief    CMSIS-CORE Initial Setup for Secure / Non-Secure Zones for ARMv8M
  * @version  V5.00
- * @date     13. May 2016
+ * @date     27. October 2016
  ******************************************************************************/
 /*
  * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
@@ -13,7 +13,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -30,7 +30,7 @@
 */
 
 /*
-// <e>Initialize Secure Attribute Unit (SAU) CTRL register
+// <e>Initialize Security Attribution Unit (SAU) CTRL register
 */
 #define SAU_INIT_CTRL          1
 
@@ -54,7 +54,11 @@
 */
 
 /*
-// <h>Initialize Secure Attribute Unit (SAU) Address Regions
+// <h>Initialize Security Attribution Unit (SAU) Address Regions
+// <i>SAU configuration specifies regions to be one of:
+// <i> - Secure and Non-Secure Callable
+// <i> - Non-Secure
+// <i>Note: All memory regions not configured by SAU are Secure
 */
 #define SAU_REGIONS_MAX   8                 /* Max. number of SAU regions */
 
@@ -1096,7 +1100,7 @@
 __STATIC_INLINE void TZ_SAU_Setup (void)
 {
 
-#if defined (__SAU_PRESENT) && (__SAU_PRESENT == 1U)
+#if defined (__SAUREGION_PRESENT) && (__SAUREGION_PRESENT == 1U)
 
   #if defined (SAU_INIT_REGION0) && (SAU_INIT_REGION0 == 1U)
     SAU_INIT_REGION(0);
@@ -1132,23 +1136,24 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 
   /* repeat this for all possible SAU regions */
 
+#endif /* defined (__SAUREGION_PRESENT) && (__SAUREGION_PRESENT == 1U) */
+
 
   #if defined (SAU_INIT_CTRL) && (SAU_INIT_CTRL == 1U)
     SAU->CTRL = ((SAU_INIT_CTRL_ENABLE << SAU_CTRL_ENABLE_Pos) & SAU_CTRL_ENABLE_Msk) |
                 ((SAU_INIT_CTRL_ALLNS  << SAU_CTRL_ALLNS_Pos)  & SAU_CTRL_ALLNS_Msk)   ;
   #endif
 
-#endif /* defined (__SAU_PRESENT) && (__SAU_PRESENT == 1U) */
-
   #if defined (SCB_CSR_AIRCR_INIT) && (SCB_CSR_AIRCR_INIT == 1U)
     SCB->SCR   = (SCB->SCR   & ~(SCB_SCR_SLEEPDEEPS_Msk    )) |
                    ((SCB_CSR_DEEPSLEEPS_VAL     << SCB_SCR_SLEEPDEEPS_Pos)     & SCB_SCR_SLEEPDEEPS_Msk);
 
-    SCB->AIRCR = (SCB->AIRCR & ~(SCB_AIRCR_VECTKEY_Msk | SCB_AIRCR_SYSRESETREQS_Msk | SCB_AIRCR_BFHFNMINS_Pos |  SCB_AIRCR_PRIS_Msk)) |
+    SCB->AIRCR = (SCB->AIRCR & ~(SCB_AIRCR_VECTKEY_Msk   | SCB_AIRCR_SYSRESETREQS_Msk |
+                                 SCB_AIRCR_BFHFNMINS_Msk |  SCB_AIRCR_PRIS_Msk)        )                     |
                    ((0x05FAU                    << SCB_AIRCR_VECTKEY_Pos)      & SCB_AIRCR_VECTKEY_Msk)      |
                    ((SCB_AIRCR_SYSRESETREQS_VAL << SCB_AIRCR_SYSRESETREQS_Pos) & SCB_AIRCR_SYSRESETREQS_Msk) |
-                   ((SCB_AIRCR_PRIS_VAL         << SCB_AIRCR_BFHFNMINS_Pos)    & SCB_AIRCR_BFHFNMINS_Msk)    |
-                   ((SCB_AIRCR_BFHFNMINS_VAL    << SCB_AIRCR_PRIS_Pos)         & SCB_AIRCR_PRIS_Msk);
+                   ((SCB_AIRCR_PRIS_VAL         << SCB_AIRCR_PRIS_Pos)         & SCB_AIRCR_PRIS_Msk)         |
+                   ((SCB_AIRCR_BFHFNMINS_VAL    << SCB_AIRCR_BFHFNMINS_Pos)    & SCB_AIRCR_BFHFNMINS_Msk);
   #endif /* defined (SCB_CSR_AIRCR_INIT) && (SCB_CSR_AIRCR_INIT == 1U) */
 
   #if defined (SCB_ICSR_INIT) && (SCB_ICSR_INIT == 1U)

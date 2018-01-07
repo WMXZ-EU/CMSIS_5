@@ -40,7 +40,7 @@ MKDIR %RELEASE_PATH%
 COPY ..\..\ARM.CMSIS.pdsc %RELEASE_PATH%\ARM.CMSIS.pdsc
 
 :: Copy LICENSE file
-COPY ..\..\LICENSE %RELEASE_PATH%\LICENSE
+COPY ..\..\LICENSE.txt %RELEASE_PATH%\LICENSE.txt
 
 :: Copy Device folder
 XCOPY /Q /S /Y ..\..\Device\*.* %RELEASE_PATH%\Device\*.*
@@ -48,6 +48,9 @@ XCOPY /Q /S /Y ..\..\Device\*.* %RELEASE_PATH%\Device\*.*
 :: Copy CMSIS folder 
 :: -- Core files 
 XCOPY /Q /S /Y ..\..\CMSIS\Core\Include\*.* %RELEASE_PATH%\CMSIS\Include\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Core\Template\ARMv8-M\*.* %RELEASE_PATH%\CMSIS\Core\Template\ARMv8-M\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Core_A\Include\*.* %RELEASE_PATH%\CMSIS\Core_A\Include\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Core_A\Source\*.* %RELEASE_PATH%\CMSIS\Core_A\Source\*.*
 
 :: -- DAP files 
 XCOPY /Q /S /Y ..\..\CMSIS\DAP\*.* %RELEASE_PATH%\CMSIS\DAP\*.*
@@ -58,11 +61,12 @@ XCOPY /Q /S /Y ..\..\CMSIS\Driver\*.* %RELEASE_PATH%\CMSIS\Driver\*.*
 :: -- DSP files 
 XCOPY /Q /S /Y ..\..\CMSIS\DSP\Include\*.* %RELEASE_PATH%\CMSIS\Include\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\DSP\Source\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Source\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\Projects\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Source\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\DSP\Examples\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Examples\*.*
 
 :: -- DSP libraries
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Lib\ARM\*.lib %RELEASE_PATH%\CMSIS\Lib\ARM\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Lib\GCC\*.a   %RELEASE_PATH%\CMSIS\Lib\GCC\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Lib\ARM\*.lib %RELEASE_PATH%\CMSIS\Lib\ARM\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Lib\GCC\*.a   %RELEASE_PATH%\CMSIS\Lib\GCC\*.*
 
 :: -- Pack files 
 XCOPY /Q /S /Y ..\..\CMSIS\Pack\Example\*.*   %RELEASE_PATH%\CMSIS\Pack\Example\*.*
@@ -73,20 +77,23 @@ XCOPY /Q /S /Y ..\..\CMSIS\RTOS\Template\*.* %RELEASE_PATH%\CMSIS\RTOS\Template\
 XCOPY /Q /S /Y ..\..\CMSIS\RTOS\RTX\*.* %RELEASE_PATH%\CMSIS\RTOS\RTX\*.*
 
 :: -- RTOS2 files 
+XCOPY /Q /S /Y ..\..\CMSIS\RTOS2\Include\*.* %RELEASE_PATH%\CMSIS\RTOS2\Include\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\RTOS2\Source\*.* %RELEASE_PATH%\CMSIS\RTOS2\Source\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\RTOS2\Template\*.* %RELEASE_PATH%\CMSIS\RTOS2\Template\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\RTOS2\RTX\*.* %RELEASE_PATH%\CMSIS\RTOS2\RTX\*.*
 
 :: -- SVD files 
 XCOPY /Q /S /Y ..\..\CMSIS\Utilities\ARM_Example.* %RELEASE_PATH%\CMSIS\SVD\*.*
 
 :: -- Utilities files 
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\CMSIS-SVD.xsd %RELEASE_PATH%\CMSIS\Utilities\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\PACK.xsd      %RELEASE_PATH%\CMSIS\Utilities\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\PackChk.exe   %RELEASE_PATH%\CMSIS\Utilities\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\SVDConv.exe   %RELEASE_PATH%\CMSIS\Utilities\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\SVDConv.linux %RELEASE_PATH%\CMSIS\Utilities\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\CMSIS-SVD.xsd       %RELEASE_PATH%\CMSIS\Utilities\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\PACK.xsd            %RELEASE_PATH%\CMSIS\Utilities\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Win32\*.*           %RELEASE_PATH%\CMSIS\Utilities\Win32\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Linux-gcc-4.4.4\*.* %RELEASE_PATH%\CMSIS\Utilities\Linux-gcc-4.4.4\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Linux-gcc-4.8.3\*.* %RELEASE_PATH%\CMSIS\Utilities\Linux-gcc-4.8.3\*.*
 
 :: -- index file 
-COPY ..\..\CMSIS\index.html %RELEASE_PATH%\CMSIS\index.html
+REM COPY ..\..\CMSIS\index.html %RELEASE_PATH%\CMSIS\index.html
 
 :: Generate Documentation 
 :: -- Generate doxygen files 
@@ -97,7 +104,7 @@ ECHO.
 ECHO Delete previous generated HTML files
 
 PUSHD ..\Documentation
-FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
+FOR %%A IN (Core, Core_A, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
 POPD
 
 :: -- Generate HTML Files
@@ -106,6 +113,10 @@ ECHO Generate HTML Files
 
 pushd Core
 doxygen core.dxy
+popd
+
+pushd Core_A
+doxygen core_A.dxy
 popd
 
 pushd DAP
@@ -140,6 +151,10 @@ pushd SVD
 doxygen svd.dxy
 popd
 
+pushd Zone
+doxygen zone.dxy
+popd
+
 :: -- Copy search style sheet
 ECHO.
 ECHO Copy search style sheets
@@ -159,12 +174,12 @@ XCOPY /Q /S /Y ..\Documentation\*.* %RELEASE_PATH%\CMSIS\Documentation\*.*
 
 :: -- Remove generated doxygen files
 PUSHD ..\Documentation
-FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
+FOR %%A IN (Core, Core_A, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
 POPD
 
 
 :: Checking 
-PackChk.exe %RELEASE_PATH%\ARM.CMSIS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353
+Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364
 
 :: --Check if PackChk.exe has completed successfully
 IF %errorlevel% neq 0 GOTO ErrPackChk
@@ -177,7 +192,9 @@ SET /P PackName=<PackName.txt
 DEL /Q PackName.txt
 
 :: Pack files
-7z.exe a %PackName% -tzip
+ECHO Creating pack file ...
+7z.exe a %PackName% -tzip > zip.log
+ECHO Packaging complete
 POPD
 GOTO End
 
@@ -186,9 +203,10 @@ ECHO PackChk.exe has encountered an error!
 EXIT /b
 
 :End
-ECHO removing temporary folders
+ECHO Removing temporary files and folders
 RMDIR /Q /S  %RELEASE_PATH%\CMSIS
 RMDIR /Q /S  %RELEASE_PATH%\Device
-DEL %RELEASE_PATH%\LICENSE
+DEL %RELEASE_PATH%\LICENSE.txt
+DEL %RELEASE_PATH%\zip.log
 
-ECHO PACK generation completed.
+ECHO gen_pack.bat completed successfully

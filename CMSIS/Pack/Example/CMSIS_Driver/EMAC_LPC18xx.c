@@ -7,7 +7,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -370,11 +370,11 @@ static int32_t PowerControl (ARM_POWER_STATE state) {
         /* Set clock accuracy to 20ns (50MHz) or 50ns (20MHz) */
         if (clk >= 51000000) {
           ENET->SUBSECOND_INCR = 20;
-          ENET->ADDEND         = (50000000ull << 32) / clk;
+          ENET->ADDEND         = (50000000ULL << 32) / clk;
         }
         else {
           ENET->SUBSECOND_INCR = 50;
-          ENET->ADDEND         = (20000000ull << 32) / clk;
+          ENET->ADDEND         = (20000000ULL << 32) / clk;
         }
 
         /* Enable timestamp fine update */

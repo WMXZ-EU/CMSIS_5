@@ -22,7 +22,7 @@ Wikipedia offers more information about
 the <a href="http://en.wikipedia.org/wiki/Universal_asynchronous_receiver/transmitter" target="_blank"><b>Universal asynchronous receiver/transmitter</b></a>.
 
 
-**USART API**
+<b>USART API</b>
 
 The following header files define the Application Programming Interface (API) for the USART interface:
   - \b %Driver_USART.h : Driver API for Universal Synchronous Asynchronous Receiver/Transmitter
@@ -31,13 +31,13 @@ The driver implementation is a typical part of the Device Family Pack (DFP) that
 peripherals of the microcontroller family.
 
 
-**Driver Functions**
+<b>Driver Functions</b>
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_USART : access struct for USART driver functions
 
   
-**Example Code**
+<b>Example Code</b>
 
 The following example code shows the usage of the USART interface for asynchronous communication.
 
@@ -596,11 +596,11 @@ int32_t ARM_USART_Control (uint32_t control, uint32_t arg)  {
 The function \b ARM_USART_Control control the USART interface settings and execute various operations.
 
 The parameter \em control sets the operation and is explained in the table below.
-Values from different categories can be ORed with the exception of \ref usart_misc_tab "<b>Miscellaneous Operations</b>". \n
+Values from different categories can be ORed with the exception of \ref usart_misc_tab "Miscellaneous Operations".
+
 The parameter \em arg provides, depending on the operation, additional information, for example the baudrate.
 
-
-The table list the \em control operations.
+The table lists the available \em control operations.
 
 <TABLE class="cmtable" summary="">
 <TR><TH>Parameter \em control           </TH>  <TH style="text-align:right"> Bit                 </TH>     <TH> Category </TH> <TH>Description </TH></TR>

@@ -3,7 +3,7 @@
  * @brief    CMSIS Device System Source File for
  *           ARMv8MML Device Series
  * @version  V5.00
- * @date     29. April 2016
+ * @date     02. November 2016
  ******************************************************************************/
 /*
  * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
@@ -14,7 +14,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
@@ -25,10 +25,16 @@
 
 #if defined (ARMv8MML)
   #include "ARMv8MML.h"
+#elif defined (ARMv8MML_DSP)
+  #include "ARMv8MML_DSP.h"
 #elif defined (ARMv8MML_SP)
   #include "ARMv8MML_SP.h"
+#elif defined (ARMv8MML_DSP_SP)
+  #include "ARMv8MML_DSP_SP.h"
 #elif defined (ARMv8MML_DP)
   #include "ARMv8MML_DP.h"
+#elif defined (ARMv8MML_DSP_DP)
+  #include "ARMv8MML_DSP_DP.h"
 #else
   #error device not specified!
 #endif
@@ -40,15 +46,15 @@
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define  XTAL            ( 5000000U)      /* Oscillator frequency */
+#define  XTAL            ( 5000000UL)      /* Oscillator frequency */
 
-#define  SYSTEM_CLOCK    (5 * XTAL)
+#define  SYSTEM_CLOCK    (5U * XTAL)
 
 
 /*----------------------------------------------------------------------------
   Externals
  *----------------------------------------------------------------------------*/
-#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1)
+#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
   extern uint32_t __Vectors;
 #endif
 
@@ -72,13 +78,13 @@ void SystemCoreClockUpdate (void)
 void SystemInit (void)
 {
 
-#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1)
+#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
   SCB->VTOR = (uint32_t) &__Vectors;
 #endif
 
-#if defined (__FPU_USED) && (__FPU_USED == 1)
-  SCB->CPACR |= ((3U << 10*2) |           /* set CP10 Full Access */
-                 (3U << 11*2)  );         /* set CP11 Full Access */
+#if defined (__FPU_USED) && (__FPU_USED == 1U)
+  SCB->CPACR |= ((3U << 10U*2U) |           /* enable CP10 Full Access */
+                 (3U << 11U*2U)  );         /* enable CP11 Full Access */
 #endif
 
 #ifdef UNALIGNED_SUPPORT_DISABLE
