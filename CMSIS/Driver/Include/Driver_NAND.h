@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -15,16 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Date:        30. May 2014
- * $Revision:    V2.01
+ * $Date:        14. Nov 2017
+ * $Revision:    V2.3
  *
  * Project:      NAND Flash Driver definitions
  */
 
 /* History:
- *  Version 2.01
+ *  Version 2.3
+ *    Extended ARM_NAND_ECC_INFO structure
+ *  Version 2.2
+ *    ARM_NAND_STATUS made volatile
+ *  Version 2.1
  *    Updated ARM_NAND_ECC_INFO structure and ARM_NAND_ECC_xxx definitions
- *  Version 2.00
+ *  Version 2.0
  *    New simplified driver:
  *      complexity moved to upper layer (command agnostic)
  *    Added support for:
@@ -49,7 +53,7 @@ extern "C"
 
 #include "Driver_Common.h"
 
-#define ARM_NAND_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(2,01)  /* API version */
+#define ARM_NAND_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(2,3)  /* API version */
 
 
 /****** NAND Device Power *****/
@@ -173,24 +177,30 @@ extern "C"
 \brief NAND ECC (Error Correction Code) Information
 */
 typedef struct _ARM_NAND_ECC_INFO {
-  uint32_t type             :  2;       ///< Type: 1=ECC0 over Data, 2=ECC0 over Data+Spare, 3=ECC0 over Data and ECC1 over Spare
-  uint32_t page_layout      :  1;       ///< Page layout: 0=|Data0|Spare0|...|DataN-1|SpareN-1|, 1=|Data0|...|DataN-1|Spare0|...|SpareN-1|
+  uint32_t type             :  2;       ///< Type: 1=ECC0 over Main, 2=ECC0 over Main+Spare, 3=ECC0 over Main and ECC1 over Spare
+  uint32_t page_layout      :  1;       ///< Page layout: 0=|Main0|Spare0|...|MainN-1|SpareN-1|, 1=|Main0|...|MainN-1|Spare0|...|SpareN-1|
   uint32_t page_count       :  3;       ///< Number of virtual pages: N = 2 ^ page_count
-  uint32_t page_size        :  4;       ///< Virtual Page size (Data+Spare): 0=512+16, 1=1k+32, 2=2k+64, 3=4k+128, 4=8k+256, 8=512+28, 9=1k+56, 10=2k+112, 11=4k+224, 12=8k+448
+  uint32_t page_size        :  4;       ///< Virtual Page size (Main+Spare): 0=512+16, 1=1k+32, 2=2k+64, 3=4k+128, 4=8k+256, 8=512+28, 9=1k+56, 10=2k+112, 11=4k+224, 12=8k+448, 15=Not used (extended description)
   uint32_t reserved         : 14;       ///< Reserved (must be zero)
   uint32_t correctable_bits :  8;       ///< Number of correctable bits (based on 512 byte codeword size)
-  uint16_t codeword_size [2];           ///< Number of bytes over which ECC is calculated
-  uint16_t ecc_size      [2];           ///< ECC size in bytes (rounded up)
-  uint16_t ecc_offset    [2];           ///< ECC offset in bytes (where ECC starts in Spare area) 
+  uint16_t codeword_size     [2];       ///< Number of bytes over which ECC is calculated
+  uint16_t ecc_size          [2];       ///< ECC size in bytes (rounded up)
+  uint16_t ecc_offset        [2];       ///< ECC offset in bytes (where ECC starts in Spare)
+  /* Extended description */
+  uint16_t virtual_page_size [2];       ///< Virtual Page size in bytes (Main/Spare)
+  uint16_t codeword_offset   [2];       ///< Codeword offset in bytes (where ECC protected data starts in Main/Spare)
+  uint16_t codeword_gap      [2];       ///< Codeword gap in bytes till next protected data
+  uint16_t ecc_gap           [2];       ///< ECC gap in bytes till next generated ECC
 } ARM_NAND_ECC_INFO;
 
 
 /**
 \brief NAND Status
 */
-typedef struct _ARM_NAND_STATUS {
+typedef volatile struct _ARM_NAND_STATUS {
   uint32_t busy      : 1;               ///< Driver busy flag
   uint32_t ecc_error : 1;               ///< ECC error detected (cleared on next Read/WriteData or ExecuteSequence)
+  uint32_t reserved  : 30;
 } ARM_NAND_STATUS;
 
 
@@ -331,7 +341,7 @@ typedef struct _ARM_NAND_STATUS {
 /**
   \fn            int32_t ARM_NAND_InquireECC (int32_t index, ARM_NAND_ECC_INFO *info)
   \brief         Inquire about available ECC.
-  \param[in]     index   Device number
+  \param[in]     index   Inquire ECC index
   \param[out]    info    Pointer to ECC information \ref ARM_NAND_ECC_INFO retrieved
   \return        \ref execution_status
 */
@@ -372,6 +382,7 @@ typedef struct _ARM_NAND_CAPABILITIES {
   uint32_t driver_strength_18  : 1;     ///< Supports Driver Strength 2.0x = 18 Ohms
   uint32_t driver_strength_25  : 1;     ///< Supports Driver Strength 1.4x = 25 Ohms
   uint32_t driver_strength_50  : 1;     ///< Supports Driver Strength 0.7x = 50 Ohms
+  uint32_t reserved            : 2;     ///< Reserved (must be zero)
 } ARM_NAND_CAPABILITIES;
 
 

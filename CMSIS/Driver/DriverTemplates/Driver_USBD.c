@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -150,6 +150,7 @@ ARM_DRIVER_USBD Driver_USBD =
     ARM_USBD_DeviceGetState,
     ARM_USBD_DeviceRemoteWakeup,
     ARM_USBD_DeviceSetAddress,
+    ARM_USBD_ReadSetupPacket,
     ARM_USBD_EndpointConfigure,
     ARM_USBD_EndpointUnconfigure,
     ARM_USBD_EndpointStall,

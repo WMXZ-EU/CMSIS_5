@@ -1,13 +1,3 @@
-/* -----------------------------------------------------------------------------
- * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
- *  
- * $Date:        2. January 2014
- * $Revision:    V2.00
- *  
- * Project:      Ethernet Driver API
- * -------------------------------------------------------------------------- */
-
-
 /**
 \defgroup eth_interface_gr Ethernet Interface
 \brief    Ethernet common definitions (%Driver_ETH.h)
@@ -20,7 +10,7 @@ Wikipedia offers more information about
 the <a href="http://en.wikipedia.org/wiki/Ethernet" target="_blank"><b>Ethernet</b></a>.
 
 
-**Block Diagram**
+<b>Block Diagram</b>
 
 The Ethernet PHY connects typically to the Ethernet MAC using an MII (Media Independent Interface) or RMII (Reduced Media Independent Interface).
 
@@ -28,7 +18,7 @@ The Ethernet PHY connects typically to the Ethernet MAC using an MII (Media Inde
 \image html EthernetSchematic.png  "Block Diagram of a typical Ethernet Interface"
 
 
-**Ethernet API**
+<b>Ethernet API</b>
 
 The following header files define the Application Programming Interface (API) for the <b>Ethernet</b> interface:
  - \b %Driver_ETH.h : Common definitions of the Ethernet PHY and MAC part
@@ -42,7 +32,7 @@ The driver implementation of the Ethernet PHY is a typical part of a \b Network 
 For parameters, the value marked with (default) is the setting after the driver initialization.
 
 
-**Driver Functions**
+<b>Driver Functions</b>
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
  - \ref ARM_DRIVER_ETH_MAC : access struct for <b>Ethernet MAC</b> driver functions.
@@ -51,7 +41,7 @@ The driver functions are published in the access struct as explained in \ref Dri
 Both drivers are used in combination and usually the Ethernet MAC provides a media interface to the Ethernet PHY.
 A typical setup sequence for the drivers is shown below:
 
-**Example Code**
+<b>Example Code</b>
 
 The following example code shows the usage of the Ethernet interface.
 

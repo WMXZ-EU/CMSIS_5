@@ -1,13 +1,3 @@
-/* -----------------------------------------------------------------------------
- * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
- *  
- * $Date:        2. January 2014
- * $Revision:    V2.00
- *  
- * Project:      I2C Driver API
- * -------------------------------------------------------------------------- */
-
-
 /**
 \defgroup i2c_interface_gr I2C Interface
 \brief    Driver API for I2C Bus Peripheral (%Driver_I2C.h)
@@ -33,7 +23,7 @@ Devices can operation in Master or Slave mode:
  
  - To operate in Slave mode set the <em>slave address</em> using the function \ref ARM_I2C_Control. The functions \ref ARM_I2C_SlaveTransmit or \ref ARM_I2C_SlaveReceive are used to transfer data in Slave mode.
 
-**I<sup>2</sup>C Slave Address**
+<b>I<sup>2</sup>C Slave Address</b>
  
 Depending on the device, I<sup>2</sup>C supports 7-bit and 10-bit Slaves addresses. 
 The element <em>address_10_bit</em> in \ref ARM_I2C_CAPABILITIES indicates that the driver is able to handle 10-bit addresses.
@@ -43,14 +33,14 @@ I<sup>2</sup>C also supports a General Call to all Slaves by using the slave add
 A General Call is recognized by Slaves have a slave address value \ref ARM_I2C_ADDRESS_GC registered with the 
 function \ref ARM_I2C_Control.
 
-**Block Diagram**
+<b>Block Diagram</b>
 
 The I2C driver allows you to connect low-speed peripherals to a motherboard, embedded system, cellphone, or other electronic device. 
 
 \image html I2C_BlockDiagram.png  "Master/Slave connected via I2C interface"
 
 
-**I<sup>2</sup>C API**
+<b>I<sup>2</sup>C API</b>
 
 The following header files define the Application Programming Interface (API) for the I<sup>2</sup>C interface:
   - \b %Driver_I2C.h : Driver API for I2C Bus Peripheral
@@ -59,24 +49,21 @@ The driver implementation is a typical part of the Device Family Pack (DFP) that
 peripherals of the microcontroller family.
 
 
-**Driver Functions**
+<b>Driver Functions</b>
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_I2C : access struct for I2C driver functions
 
 
-\anchor example **Example Code**
+\anchor example <b>Example Code</b>
 
 The following example code shows the usage of the I<sup>2</sup>C interface in Master mode.
 
 \include I2C_Demo.c
 
-\if TODO_later
 The following example code shows the usage of the I<sup>2</sup>C interface in Slave mode.
 
-Add: Code example that shows usage of slave mode.
-\endif
-
+\include I2C_SlaveDemo.c
 
 @{
 */
@@ -535,8 +522,8 @@ Parameter \em event                       |     Bit   | Description
 \ref ARM_I2C_EVENT_TRANSFER_INCOMPLETE    | 1UL << 1  | Occurs together with \ref ARM_I2C_EVENT_TRANSFER_DONE when less data is transferred then requested.
 \ref ARM_I2C_EVENT_SLAVE_TRANSMIT         | 1UL << 2  | Occurs when addressed as Slave Transmitter and \ref ARM_I2C_SlaveTransmit has not been started.
 \ref ARM_I2C_EVENT_SLAVE_RECEIVE          | 1UL << 3  | Occurs when addressed as Slave Receiver and \ref ARM_I2C_SlaveReceive has not been started.
-\ref ARM_I2C_EVENT_GENERAL_CALL           | 1UL << 4  | Indicates General Call in slave mode together with \ref ARM_I2C_EVENT_TRANSFER_DONE, \ref ARM_I2C_EVENT_SLAVE_TRANSMIT and \ref ARM_I2C_EVENT_SLAVE_RECEIVE.
-\ref ARM_I2C_EVENT_ADDRESS_NACK           | 1UL << 5  | Occurs in master mode when address is not acknowledged from slave.
+\ref ARM_I2C_EVENT_ADDRESS_NACK           | 1UL << 4  | Occurs in master mode when address is not acknowledged from slave.
+\ref ARM_I2C_EVENT_GENERAL_CALL           | 1UL << 5  | Indicates General Call in slave mode together with \ref ARM_I2C_EVENT_TRANSFER_DONE, \ref ARM_I2C_EVENT_SLAVE_TRANSMIT and \ref ARM_I2C_EVENT_SLAVE_RECEIVE.
 \ref ARM_I2C_EVENT_ARBITRATION_LOST       | 1UL << 6  | Occurs in master mode when arbitration is lost.
 \ref ARM_I2C_EVENT_BUS_ERROR              | 1UL << 7  | Occurs when bus error is detected.
 \ref ARM_I2C_EVENT_BUS_CLEAR              | 1UL << 8  | Occurs after \ref ARM_I2C_BUS_CLEAR Control operation has finished.

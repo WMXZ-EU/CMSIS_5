@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -25,22 +25,23 @@
  * -----------------------------------------------------------------------------
  */
  
+#include "cmsis_compiler.h"
 #include "rtx_os.h"
  
 // OS Idle Thread
-__NO_RETURN void osRtxIdleThread (void *argument) {
+__WEAK __NO_RETURN void osRtxIdleThread (void *argument) {
   (void)argument;
 
   for (;;) {}
 }
  
 // OS Error Callback function
-uint32_t osRtxErrorNotify (uint32_t code, void *object_id) {
+__WEAK uint32_t osRtxErrorNotify (uint32_t code, void *object_id) {
   (void)object_id;
 
   switch (code) {
     case osRtxErrorStackUnderflow:
-      // Stack underflow detected for thread (thread_id=object_id)
+      // Stack overflow detected for thread (thread_id=object_id)
       break;
     case osRtxErrorISRQueueOverflow:
       // ISR Queue overflow detected when inserting object (object_id)
@@ -55,6 +56,7 @@ uint32_t osRtxErrorNotify (uint32_t code, void *object_id) {
       // Standard C/C++ library mutex initialization failed
       break;
     default:
+      // Reserved
       break;
   }
   for (;;) {}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,8 +17,8 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        25. November 2016
- * $Revision:    V2.1
+ * $Date:        18. June 2018
+ * $Revision:    V2.1.3
  *
  * Project:      CMSIS-RTOS API
  * Title:        cmsis_os.h template header file
@@ -40,7 +40,7 @@
  *    Control functions for short timeouts in microsecond resolution:
  *    Added: osKernelSysTick, osKernelSysTickFrequency, osKernelSysTickMicroSec
  *    Removed: osSignalGet 
- * Version 2.0
+ * Version 2.0.0
  *    OS objects creation without macros (dynamic creation and resource allocation):
  *     - added: osXxxxNew functions which replace osXxxxCreate
  *     - added: osXxxxAttr_t structures
@@ -112,10 +112,23 @@
  *     - added: osMessageQueueReset, osMessageQueueDelete
  *    Mail Queue: 
  *     - deprecated (superseded by extended Message Queue functionality)
- * Version 2.1
- *    Support for critical and uncritical sections (nesting safe)
+ * Version 2.1.0
+ *    Support for critical and uncritical sections (nesting safe):
  *    - updated: osKernelLock, osKernelUnlock
  *    - added: osKernelRestoreLock
+ *    Updated Thread and Event Flags:
+ *    - changed flags parameter and return type from int32_t to uint32_t
+ * Version 2.1.1
+ *    Additional functions allowed to be called from Interrupt Service Routines:
+ *    - osKernelGetTickCount, osKernelGetTickFreq
+ *    Changed Kernel Tick type to uint32_t:
+ *    - updated: osKernelGetTickCount, osDelayUntil
+ * Version 2.1.2
+ *    Additional functions allowed to be called from Interrupt Service Routines:
+ *    - osKernelGetInfo, osKernelGetState
+ * Version 2.1.3
+ *    Additional functions allowed to be called from Interrupt Service Routines:
+ *    - osThreadGetId
  *---------------------------------------------------------------------------*/
  
 #ifndef CMSIS_OS_H_

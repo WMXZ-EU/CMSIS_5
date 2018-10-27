@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------  
-* Copyright (C) 2016 ARM Limited. All rights reserved.  
+* Copyright (C) 2016 Arm Limited. All rights reserved.  
 *  
 * $Date:        14. April 2016
 * $Revision:    1.02
@@ -132,7 +132,7 @@ The following files relevant to CMSIS-RTOS are present in the <b>ARM::CMSIS</b> 
     <tr>
       <td>V4.81</td>
       <td>
-       Added provisions for ARM Compiler 6.\n
+       Added provisions for Arm Compiler 6.\n
        Corrected: Message Queue behavior when osMessagePut timed out due to full queue and osMessageGet was called from ISR.\n
       </td>
     </tr>
@@ -478,7 +478,7 @@ If this is impossible, the CMSIS-RTOS rejects calls by nested ISR functions with
 /**
 \page genRTOSIF Generic RTOS Interface
 
-The CMSIS-RTOS API is a generic RTOS interface for ARM&reg; Cortex&reg;-M processor-based devices. CMSIS-RTOS provides a
+The CMSIS-RTOS API is a generic RTOS interface for Arm&reg; Cortex&reg;-M processor-based devices. CMSIS-RTOS provides a
 standardized API for software components that require RTOS functionality and gives therefore serious benefits to the users
 and the software industry.
  - CMSIS-RTOS provides basic features that are required in many applications or technologies such as UML or Java (JVM).
@@ -541,7 +541,7 @@ towards the Cortex-M processors. Optional features may be for example
 /**
 \page rtosValidation RTOS Validation
 
-ARM offers a <a class=el href="http://www.keil.com/pack" target="_blank">Software Pack</a> for the CMSIS-RTOS Validation.
+Arm offers a <a class=el href="http://www.keil.com/pack" target="_blank">Software Pack</a> for the CMSIS-RTOS Validation.
 The <b>ARM::CMSIS-RTOS_Validation</b> Pack contains the following:
 
  - Source code of a CMSIS-RTOS Validation Suite along with configuration file.
@@ -601,7 +601,7 @@ This RTX implementation gives therefore serious benefits to the users and the so
  - The unified feature set of the CMSIS-RTOS API simplifies sharing of software components and reduces learning efforts.
  - Middleware components that use the CMSIS-RTOS API are RTOS agnostic and CMSIS-RTOS compliant middleware is easier to
    adapt.
- - This RTX implementation is available under the BSD license and can be freely distributed with project templates.
+ - This RTX implementation is available under the Apache-2.0 license and can be freely distributed with project templates.
  
 The CMSIS-RTOS RTX manages the resources of the microcontroller system and implements the concept of parallel threads that
 run concurrently. There are many advantages of using the CMSIS-RTOS RTX kernel.
@@ -1110,7 +1110,7 @@ The CMSIS-RTOS RTX kernel uses the following interrupts:
 - PendSV (request for system-level service) when calling certain RTX functions from \b Handler mode
 
 Interrupts can be used without limitation. Interrupt priority grouping can be used with some restrictions:
-- IRQ interrupts are never disabled by RTX Kernel for ARMv7-M architectures (Cortex-M3/M4/M7).
+- IRQ interrupts are never disabled by RTX Kernel for Armv7-M architectures (Cortex-M3/M4/M7).
 - Software interrupt 0 is used by RTX and cannot be used in an application.
 - RTX uses its own SVC Handler which is automatically linked from the library. \ref svcFunctions explains how to use a custom
   SVC table.
@@ -1135,7 +1135,7 @@ The file \ref RTX_Conf_CM "RTX_Conf_CM.c" is used to define the configuration pa
 part of every project that is using the CMSIS-RTOS RTX kernel.
 
 The configuration file uses
-<a class="el" href="http://www.keil.com/pack/doc/CMSIS/Pack/html/_config_wizard.html" target="_blank">Configuration Wizard Annotations</a>.
+<b>Configuration Wizard Annotations</b>. Refer to <b>Pack - Configuration Wizard Annotations</b> for details.
 Depending on the development tool that is used, this might lead to a more user friendly graphical representation of the
 settings. The following is a screenshot of the same configuration file using µVision's Configuration Wizard view:
 
@@ -1178,7 +1178,7 @@ Main stack is also used when:
 
 |Name                                                               |\#define         |Description|
 |-------------------------------------------------------------------|-----------------|-----------|
-|Number of concurrent running user threads                          |\c OS_TASKCNT    |Indicates the maximum number of threads that will run at the same time (including main and osTimerThread (if OS_TIMERS set to 1)).|
+|Number of concurrent running user threads                          |\c OS_TASKCNT    |Indicates the maximum number of threads that will run at the same time (including main).|
 |Default Thread stack size [bytes]                                  |\c OS_STKSIZE    |Specifies the default stack size (in words) for threads that are defined with osThreadDef \a stacksz = 0.|
 |Main Thread stack size [bytes]                                     |\c OS_MAINSTKSIZE|Is the stack requirement (in words) for the main function that is started by default as an RTOS thread.|
 |Number of threads with user-provided stack size                    |\c OS_PRIVCNT    |Indicates the number of threads that are defined with \ref osThreadDef \a stacksz != 0 (excluding main). \a stacksz specifies the stack size requirement of that thread.|
@@ -1351,16 +1351,24 @@ The CMSIS-RTOS RTX provides system-wide settings for:
  
 \section RoundRobin Settings for Round-Robin Thread Switching
 
-CMSIS-RTOS RTX may be configured to use Round-Robin Multitasking thread switching. Round-Robin allows quasi-parallel
-execution of several threads. Threads are not really executed concurrently but are time-sliced where the available CPU time
-is divided into time slices and CMSIS-RTOS RTX assigns a time slice to each thread. Because the time slice is typically short
-(only a few milliseconds) it appears as though threads execute simultaneously.
+CMSIS-RTOS RTX may be configured to use round-robin multitasking thread switching. Round-robin allows quasi-parallel
+execution of several threads of the \a same priority. Threads are not really executed concurrently, but are scheduled where
+the available CPU time is divided into time slices and CMSIS-RTOS RTX assigns a time slice to each thread. Because the time
+slice is typically short (only a few milliseconds), it appears as though threads execute simultaneously.
 
-Threads execute for the duration of their time-slice (unless the thread's time slice is given up). Then, CMSIS-RTOS RTX
-switches to the next thread that is ready to run and has the same priority. If no other task with the same priority is ready
-to run, the current running task resumes it execution.
+Round-robin thread switching functions as follows:
+- the tick is preloaded with the timeout value when a thread switch occurs
+- the tick is decremented (if not already zero) each system tick if the same thread is still executing
+- when the tick reaches 0 it indicates that a timeout has occurred. If there is another thread ready with the \a same
+  priority, then the system switches to that thread and the tick is preloaded with timeout again.
 
-Round-Robin Multitasking is controlled with the <b>\#define OS_ROBIN</b>. The time-slice period is configured (in RTX Timer
+In other words, threads execute for the duration of their time slice (unless a thread's time slice is given up). Then, RTX
+switches to the next thread that is in \b READY state and has the same priority. If no other thread with the same priority is
+ready to run, the current running thread resumes it execution.
+
+\note When switching to higher priority threads, the round-robin timeout value is reset.
+
+Round-Robin multitasking is controlled with the <b>\#define OS_ROBIN</b>. The time slice period is configured (in RTX Timer
 ticks) with the <b>\#define OS_ROBINTOUT</b>.
 
 <b>Code Example:</b>
@@ -1615,7 +1623,7 @@ The tutorial is available as a Software Pack from
 <a href="http://www.keil.com/dd2/pack" target="_blank">http://www.keil.com/dd2/pack</a>. On the page, browse to \b Hitex and
 select the Pack described as "An Introduction to using CMSIS RTOS for Cortex-M Microcontrollers". Download and install the
 Pack which contains all example projects referenced in the
-<a class="el" href="../CMSIS_RTOS_Tutorial.pdf">CMSIS_RTOS_Tutorial.pdf</a>.
+<a class="el" href="CMSIS_RTOS_Tutorial.pdf">CMSIS_RTOS_Tutorial.pdf</a>.
 */
 
 
@@ -2243,6 +2251,7 @@ void ThreadCreate_example (void) {
 Get the thread ID of the current running thread.
 
 \note Cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
+\note Must not be used inside the idle daemon. This would lead to undefined behavior.
 
 <b>Code Example</b>
 \code{.c}
@@ -2270,6 +2279,7 @@ Remove the thread function from the active thread list. If the thread is current
  - \em osErrorISR: \ref osThreadTerminate cannot be called from interrupt service routines.
 
 \note Cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
+\note Avoid calling the function with a \em thread_id that does not exist or has been terminated already.
 
 <b>Code Example</b>
 \code{.c}
@@ -2876,7 +2886,7 @@ When these signal flags are already set, the function returns instantly. Otherwi
 Signal flags that are reported as event are automatically cleared.
 
 The argument \a millisec specifies how long the system waits for the specified signal flags.
-While the system waits the tread calling this function is put into the state \b WAITING.
+While the system waits the thread calling this function is put into the state \b WAITING.
 The timeout value can have the following values:
  - when \a millisec is 0, the function returns instantly.
  - when \a millisec is set to \b osWaitForever the function will wait for an infinite time until a specified signal is set.
@@ -3498,7 +3508,7 @@ Allocate a memory block from the mail queue that is filled with the mail informa
 The argument \a queue_id specifies a mail queue identifier that is obtain with \ref osMailCreate.
 
 The argument \a millisec specifies how long the system waits for a mail slot to become available.
-While the system waits the tread calling this function is put into the state \b WAITING.
+While the system waits the thread calling this function is put into the state \b WAITING.
 The \a millisec timeout can have the following values:
  - when \a millisec is 0, the function returns instantly.
  - when \a millisec is set to \b osWaitForever the function will wait for an infinite time until a mail slot can be allocated.
@@ -3537,6 +3547,8 @@ Put the memory block specified with \a mail into the mail queue specified by \a 
  - \em osOK: the message is put into the queue.
  - \em osErrorValue: \a mail was previously not allocated as memory slot.
  - \em osErrorParameter: a parameter is invalid or outside of a permitted range.
+ 
+\note \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines" can call this function.
 */
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/

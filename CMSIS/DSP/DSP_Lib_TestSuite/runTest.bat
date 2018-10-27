@@ -1,8 +1,6 @@
 @echo off
 
-SET TMP=C:\Temp
-SET TEMP=C:\Temp
-SET UVEXE=C:\Keil\UV4\UV4.EXE
+set UVEXE=C:\Keil_v5\UV4\UV4.EXE
 
 if .%1==. goto help
 for %%a in (ARM GCC) do if %1==%%a goto checkParam2
@@ -21,9 +19,9 @@ for %%a in ( ^
  cortexM7lfdp ^
  ARMv8MBLl ^
  ARMv8MMLl ^
- ARMv8MBLlfsp ^
- ARMv8MBLlfdp ^
- ARMv8MBLld ^
+ ARMv8MMLlfsp ^
+ ARMv8MMLlfdp ^
+ ARMv8MMLld ^
  ARMv8MMLldfsp ^
  ARMv8MMLldfdp ^
            ) do if %2==%%a goto checkParam3

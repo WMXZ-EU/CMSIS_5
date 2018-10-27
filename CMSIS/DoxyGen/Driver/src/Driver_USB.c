@@ -1,13 +1,3 @@
-/* -----------------------------------------------------------------------------
- * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
- *  
- * $Date:        2. January 2014
- * $Revision:    V2.00
- *  
- * Project:      USB Driver API
- * -------------------------------------------------------------------------- */
-
-
 /**
 \defgroup usb_interface_gr USB Interface
 \brief   USB common definitions (%Driver_USB.h)
@@ -20,7 +10,7 @@ In microcontroller (MCU) applications, the interface is often used to connect a 
  - The USB Implementers Forum provides detailed documentation under <a href="http://www.usb.org"><b>www.usb.org</b></a>.
 
 
-**Block Diagram**
+<b>Block Diagram</b>
 
 Typically only one USB Device is connected to a USB Host. If several USB devices must be connected to the same USB host, then
 the connection must be done via a USB hub.
@@ -30,7 +20,7 @@ the connection must be done via a USB hub.
 </p>
 
 
-**USB API**
+<b>USB API</b>
 
 The following header files define the Application Programming Interface (API) for the USB interface:
   - \b %Driver_USB.h :  Common definitions of the USBD and USBH interface
@@ -41,22 +31,13 @@ The driver implementation is a typical part of the Device Family Pack (DFP) that
 peripherals of the microcontroller family.
 
 
-**Driver Functions**
+<b>Driver Functions</b>
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_USBD : access struct for USBD driver functions
   - \ref ARM_DRIVER_USBH : access struct for USBH driver functions
-*/
-/*
-A typical setup sequence for the driver is shown below:
 
-<b>Example Code:</b>
-
-\todo example
-*/
-/**
 <hr>
-
 */
 
 
@@ -65,7 +46,7 @@ A typical setup sequence for the driver is shown below:
 \ingroup usb_interface_gr
 \details
 
-**USB Device API**
+<b>USB Device API</b>
 
 The header file \b Driver_USBD.h defines the API for the <b>USB Device Driver</b> interface used by middleware components.
 The driver implementation itself is a typical part of the Device Family Pack, which provides entry points to the interface 
@@ -77,7 +58,7 @@ Callbacks are called by the driver, in interrupt context when an appropriate eve
 and endpoint related events (\ref USBD_ep_events).
 
 
-**USB Device Function Call Sequence**
+<b>USB Device Function Call Sequence</b>
 
 To use the USBD driver invoke the API functions in the following order:
 
@@ -109,7 +90,7 @@ To use the USBD driver invoke the API functions in the following order:
 \addtogroup usbh_interface_gr
 \ingroup usb_interface_gr
 \details
-**USB Host API**
+<b>USB Host API</b>
 
 The header file \b Driver_USBH.h defines the API for the <b>USB Host Driver</b> interface used by middleware components.
 The driver implementation itself is a typical part of the Device Family Pack, which provides entry points to the interface 
@@ -122,7 +103,7 @@ and pipe related events (\ref ARM_USBH_SignalPipeEvent).
 
 \cond
 
-**USB Host Function Call Sequence**
+<b>USB Host Function Call Sequence</b>
 
 To use the USBH driver invoke the API functions in the following order:
 

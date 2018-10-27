@@ -35,7 +35,7 @@ q31_t ref_pid_q31(
 	acc += (q63_t) S->A2 * S->state[1];
 
 	/* convert output to 1.31 format to add y[n-1] */
-	out = (q31_t) (acc >> 31u);
+	out = (q31_t) (acc >> 31U);
 
 	/* out += y[n-1] */
 	out += S->state[2];
@@ -57,7 +57,7 @@ q15_t ref_pid_q15(
 	q15_t out;
 	q15_t A1, A2;
 	
-#ifndef ARM_MATH_CM0_FAMILY
+#if defined (ARM_MATH_DSP)
    
 #ifndef  ARM_MATH_BIG_ENDIAN
 	A2 = S->A1 >> 16;

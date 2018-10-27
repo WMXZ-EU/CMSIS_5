@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,8 +17,8 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        25. November 2016
- * $Revision:    V2.1
+ * $Date:        30. October 2017
+ * $Revision:    V2.1.2
  *
  * Project:      CMSIS-RTOS API
  * Title:        cmsis_os.h RTX header file
@@ -40,7 +40,7 @@
  *    Control functions for short timeouts in microsecond resolution:
  *    Added: osKernelSysTick, osKernelSysTickFrequency, osKernelSysTickMicroSec
  *    Removed: osSignalGet 
- * Version 2.0
+ * Version 2.0.0
  *    OS objects creation without macros (dynamic creation and resource allocation):
  *     - added: osXxxxNew functions which replace osXxxxCreate
  *     - added: osXxxxAttr_t structures
@@ -112,10 +112,20 @@
  *     - added: osMessageQueueReset, osMessageQueueDelete
  *    Mail Queue: 
  *     - deprecated (superseded by extended Message Queue functionality)
- * Version 2.1
- *    Support for critical and uncritical sections (nesting safe)
+ * Version 2.1.0
+ *    Support for critical and uncritical sections (nesting safe):
  *    - updated: osKernelLock, osKernelUnlock
  *    - added: osKernelRestoreLock
+ *    Updated Thread and Event Flags:
+ *    - changed flags parameter and return type from int32_t to uint32_t
+ * Version 2.1.1
+ *    Additional functions allowed to be called from Interrupt Service Routines:
+ *    - osKernelGetTickCount, osKernelGetTickFreq
+ *    Changed Kernel Tick type to uint32_t:
+ *    - updated: osKernelGetTickCount, osDelayUntil
+ * Version 2.1.2
+ *    Additional functions allowed to be called from Interrupt Service Routines:
+ *    - osKernelGetInfo, osKernelGetState
  *---------------------------------------------------------------------------*/
  
 #ifndef CMSIS_OS_H_
@@ -123,9 +133,9 @@
  
 #define osCMSIS             0x20001U    ///< API version (main[31:16].sub[15:0])
  
-#define osCMSIS_RTX         0x50001U    ///< RTOS identification and version (main[31:16].sub[15:0])
+#define osCMSIS_RTX         0x50003U    ///< RTOS identification and version (main[31:16].sub[15:0])
  
-#define osKernelSystemId   "RTX V5.1"   ///< RTOS identification string
+#define osKernelSystemId   "RTX V5.3"   ///< RTOS identification string
  
 #define osFeature_MainThread  0         ///< main thread      1=main can be thread, 0=not available
 #define osFeature_Signals     31U       ///< maximum number of Signal Flags available per thread
