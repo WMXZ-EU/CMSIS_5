@@ -47,14 +47,14 @@ void TC_CoreAFunc_FPSCR(void) {
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
 #if defined(__CC_ARM)
-#define __SUBS(Rd, Rm, Rn) __ASM("SUBS " # Rd ", " # Rm ", " # Rn)
-#define __ADDS(Rd, Rm, Rn) __ASM("ADDS " # Rd ", " # Rm ", " # Rn)
+#define __SUBS(Rd, Rm, Rn) __ASM volatile("SUBS " # Rd ", " # Rm ", " # Rn)
+#define __ADDS(Rd, Rm, Rn) __ASM volatile("ADDS " # Rd ", " # Rm ", " # Rn)
 #elif defined( __GNUC__ ) && defined(__thumb__)
-#define __SUBS(Rd, Rm, Rn) __ASM("SUB %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
-#define __ADDS(Rd, Rm, Rn) __ASM("ADD %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
+#define __SUBS(Rd, Rm, Rn) __ASM volatile("SUB %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
+#define __ADDS(Rd, Rm, Rn) __ASM volatile("ADD %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
 #else
-#define __SUBS(Rd, Rm, Rn) __ASM("SUBS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
-#define __ADDS(Rd, Rm, Rn) __ASM("ADDS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
+#define __SUBS(Rd, Rm, Rn) __ASM volatile("SUBS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
+#define __ADDS(Rd, Rm, Rn) __ASM volatile("ADDS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn))
 #endif
 
 void TC_CoreAFunc_CPSR(void) {
@@ -245,3 +245,25 @@ void TC_CoreAFunc_MVBAR(void) {
   
   __set_MVBAR(mvbar);
 }
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+
+void TC_CoreAFunc_FPU_Enable(void) {
+  uint32_t fpexc = __get_FPEXC();
+  __set_FPEXC(fpexc & ~0x40000000u); // disable FPU
+  
+  uint32_t cp15;
+  __get_CP(15, 0, cp15, 1, 0, 2);
+  
+  cp15 &= ~0x00F00000u;
+  __set_CP(15, 0, cp15, 1, 0, 2); // disable FPU access
+  
+  __FPU_Enable();
+    
+  __get_CP(15, 0, cp15, 1, 0, 2);
+  ASSERT_TRUE((cp15 & 0x00F00000u) == 0x00F00000u);
+
+  fpexc = __get_FPEXC();  
+  ASSERT_TRUE((fpexc & 0x40000000u) == 0x40000000u);
+}
+

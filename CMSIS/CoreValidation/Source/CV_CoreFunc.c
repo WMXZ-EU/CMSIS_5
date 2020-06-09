@@ -2,7 +2,7 @@
  *      Name:         CV_CoreFunc.c
  *      Purpose:      CMSIS CORE validation tests implementation
  *-----------------------------------------------------------------------------
- *      Copyright (c) 2017 - 2018 Arm Limited. All rights reserved.
+ *      Copyright (c) 2017 - 2019 Arm Limited. All rights reserved.
  *----------------------------------------------------------------------------*/
 
 #include "CV_Framework.h"
@@ -194,13 +194,11 @@ Check expected behavior of interrupt vector relocation functions:
 void TC_CoreFunc_IRQVect(void) {
 #if defined(__VTOR_PRESENT) && __VTOR_PRESENT
   /* relocate vector table */
-  extern uint32_t __Vectors[];
-  static uint32_t vectors[32] __ALIGNED(512);
+  extern const VECTOR_TABLE_Type __VECTOR_TABLE[48];
+  static VECTOR_TABLE_Type vectors[sizeof(__VECTOR_TABLE)/sizeof(__VECTOR_TABLE[0])] __ALIGNED(512);
 
-  for(uint32_t i=0U; i<32U; i++) {
-    vectors[i] = __Vectors[i];
-  }
-
+  memcpy(vectors, __VECTOR_TABLE, sizeof(__VECTOR_TABLE));
+  
   const uint32_t orig_vtor = SCB->VTOR;
   const uint32_t vtor = ((uint32_t)vectors) & SCB_VTOR_TBLOFF_Msk;
   SCB->VTOR = vtor;
@@ -308,19 +306,19 @@ void TC_CoreFunc_IPSR (void) {
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
 
 #if defined(__CC_ARM)
-#define SUBS(Rd, Rm, Rn) __ASM("SUBS " # Rd ", " # Rm ", " # Rn)
-#define ADDS(Rd, Rm, Rn) __ASM("ADDS " # Rd ", " # Rm ", " # Rn)
+#define SUBS(Rd, Rm, Rn) __ASM volatile("SUBS " # Rd ", " # Rm ", " # Rn)
+#define ADDS(Rd, Rm, Rn) __ASM volatile("ADDS " # Rd ", " # Rm ", " # Rn)
 #elif defined( __GNUC__ )  && (!defined(__ARMCC_VERSION))  && (defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_8M_BASE__))
-#define SUBS(Rd, Rm, Rn) __ASM("SUB %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
-#define ADDS(Rd, Rm, Rn) __ASM("ADD %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
+#define SUBS(Rd, Rm, Rn) __ASM volatile("SUB %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
+#define ADDS(Rd, Rm, Rn) __ASM volatile("ADD %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
 #elif defined(_lint)
 //lint -save -e(9026) allow function-like macro
 #define SUBS(Rd, Rm, Rn) ((Rd) = (Rm) - (Rn))
 #define ADDS(Rd, Rm, Rn) ((Rd) = (Rm) + (Rn))
 //lint -restore
 #else
-#define SUBS(Rd, Rm, Rn) __ASM("SUBS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
-#define ADDS(Rd, Rm, Rn) __ASM("ADDS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
+#define SUBS(Rd, Rm, Rn) __ASM volatile("SUBS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
+#define ADDS(Rd, Rm, Rn) __ASM volatile("ADDS %0, %1, %2" : "=r"(Rd) : "r"(Rm), "r"(Rn) : "cc")
 #endif
 
 /**
@@ -331,13 +329,13 @@ void TC_CoreFunc_IPSR (void) {
 - Check negative, zero and overflow flags
 */
 void TC_CoreFunc_APSR (void) {
-  uint32_t result;
+  volatile uint32_t result;
   //lint -esym(838, Rm) unused values
   //lint -esym(438, Rm) unused values
 
   // Check negative flag
-  int32_t Rm = 5;
-  int32_t Rn = 7;
+  volatile int32_t Rm = 5;
+  volatile int32_t Rn = 7;
   SUBS(Rm, Rm, Rn);
   result  = __get_APSR();
   ASSERT_TRUE((result & APSR_N_Msk) == APSR_N_Msk);

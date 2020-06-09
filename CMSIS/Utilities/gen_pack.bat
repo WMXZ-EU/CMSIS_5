@@ -15,7 +15,6 @@ SET DOXYGENPATH=C:\Program Files\doxygen\bin
 
 :: Tool path for mscgen utility
 SET MSCGENPATH=C:\Program Files (x86)\Mscgen
-
 :: These settings should be passed on to subprocesses as well
 SET PATH=%ZIPPATH%;%DOXYGENPATH%;%MSCGENPATH%;%PATH%
 
@@ -60,19 +59,14 @@ XCOPY /Q /S /Y ..\..\CMSIS\DAP\*.* %RELEASE_PATH%\CMSIS\DAP\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\Driver\*.* %RELEASE_PATH%\CMSIS\Driver\*.*
 
 :: -- DSP files 
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\ComputeLibrary\*.* %RELEASE_PATH%\CMSIS\DSP\ComputeLibrary\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\DSP\Include\*.* %RELEASE_PATH%\CMSIS\DSP\Include\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Source\*.*  %RELEASE_PATH%\CMSIS\DSP\Source\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Projects\*.*  %RELEASE_PATH%\CMSIS\DSP\Projects\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Examples\*.*  %RELEASE_PATH%\CMSIS\DSP\Examples\*.*
 XCOPY /Q /S /Y ..\..\CMSIS\DSP\Include\*.* %RELEASE_PATH%\CMSIS\Include\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Source\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Source\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Projects\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Source\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\DSP\Examples\*.*  %RELEASE_PATH%\CMSIS\DSP_Lib\Examples\*.*
-
-:: -- DSP libraries
-XCOPY /Q /S /Y ..\..\CMSIS\Lib\ARM\*.lib %RELEASE_PATH%\CMSIS\Lib\ARM\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Lib\GCC\*.a   %RELEASE_PATH%\CMSIS\Lib\GCC\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Lib\IAR\*.a   %RELEASE_PATH%\CMSIS\Lib\IAR\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\PrivateInclude\*.* %RELEASE_PATH%\CMSIS\DSP\PrivateInclude\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\Source\*.* %RELEASE_PATH%\CMSIS\DSP\Source\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\Projects\*.* %RELEASE_PATH%\CMSIS\DSP\Projects\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\Examples\*.* %RELEASE_PATH%\CMSIS\DSP\Examples\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\DSP\Lib\*.* %RELEASE_PATH%\CMSIS\DSP\Lib\*.*
 
 :: -- NN files 
 XCOPY /Q /S /Y ..\..\CMSIS\NN\*.* %RELEASE_PATH%\CMSIS\NN\*.*
@@ -100,8 +94,7 @@ XCOPY /Q /S /Y ..\..\CMSIS\Utilities\PACK.xsd            %RELEASE_PATH%\CMSIS\Ut
 XCOPY /Q /S /Y ..\..\CMSIS\Utilities\PackIndex.xsd       %RELEASE_PATH%\CMSIS\Utilities\*.*
 
 XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Win32\*.*           %RELEASE_PATH%\CMSIS\Utilities\Win32\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Linux-gcc-4.4.4\*.* %RELEASE_PATH%\CMSIS\Utilities\Linux-gcc-4.4.4\*.*
-XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Linux-gcc-4.8.3\*.* %RELEASE_PATH%\CMSIS\Utilities\Linux-gcc-4.8.3\*.*
+XCOPY /Q /S /Y ..\..\CMSIS\Utilities\Linux64\*.*         %RELEASE_PATH%\CMSIS\Utilities\Linux64\*.*
 
 :: -- index file 
 REM COPY ..\..\CMSIS\index.html %RELEASE_PATH%\CMSIS\index.html
@@ -115,12 +108,16 @@ ECHO.
 ECHO Delete previous generated HTML files
 
 PUSHD ..\Documentation
-FOR %%A IN (Core, Core_A, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
+FOR %%A IN (Build, Core, Core_A, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
 POPD
 
 :: -- Generate HTML Files
 ECHO.
 ECHO Generate HTML Files
+
+pushd Build
+doxygen Build.dxy
+popd
 
 pushd Core
 doxygen core.dxy
@@ -173,7 +170,9 @@ popd
 :: -- Copy search style sheet
 ECHO.
 ECHO Copy search style sheets
-copy /Y Doxygen_Templates\search.css ..\Documentation\CORE\html\search\. 
+copy /Y Doxygen_Templates\search.css ..\Documentation\Build\html\search\. 
+copy /Y Doxygen_Templates\search.css ..\Documentation\Core\html\search\. 
+copy /Y Doxygen_Templates\search.css ..\Documentation\Core_A\html\search\. 
 copy /Y Doxygen_Templates\search.css ..\Documentation\Driver\html\search\.
 REM copy /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\. 
 copy /Y Doxygen_Templates\search.css ..\Documentation\Pack\html\search\.
@@ -181,7 +180,6 @@ REM copy /Y Doxygen_Templates\search.css ..\Documentation\SVD\html\search\.
 copy /Y Doxygen_Templates\search.css ..\Documentation\DSP\html\search\.
 copy /Y Doxygen_Templates\search.css ..\Documentation\DAP\html\search\.
 copy /Y Doxygen_Templates\search.css ..\Documentation\NN\html\search\.
-xcopy /E /I /Q /Y Zone\genmodel ..\Documentation\Zone\genmodel
 
 ECHO.
 POPD
@@ -191,12 +189,11 @@ XCOPY /Q /S /Y ..\Documentation\*.* %RELEASE_PATH%\CMSIS\Documentation\*.*
 
 :: -- Remove generated doxygen files
 PUSHD ..\Documentation
-FOR %%A IN (Core, Core_A, DAP, Driver, DSP, General, NN, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
+FOR %%A IN (Build, Core, Core_A, DAP, Driver, DSP, General, NN, Pack, RTOS, RTOS2, SVD, Zone) DO IF EXIST %%A (RMDIR /S /Q %%A)
 POPD
 
-
 :: Checking 
-Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364
+Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364 -x M335
 
 :: --Check if PackChk.exe has completed successfully
 IF %errorlevel% neq 0 GOTO ErrPackChk
@@ -210,7 +207,7 @@ DEL /Q PackName.txt
 
 :: Pack files
 ECHO Creating pack file ...
-7z.exe a %PackName% -tzip > zip.log
+7z.exe a %PackName% -tzip > NUL:
 ECHO Packaging complete
 POPD
 GOTO End
@@ -224,6 +221,5 @@ ECHO Removing temporary files and folders
 RMDIR /Q /S  %RELEASE_PATH%\CMSIS
 RMDIR /Q /S  %RELEASE_PATH%\Device
 DEL %RELEASE_PATH%\LICENSE.txt
-DEL %RELEASE_PATH%\zip.log
 
 ECHO gen_pack.bat completed successfully

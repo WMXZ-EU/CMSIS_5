@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -34,17 +34,13 @@
 #ifndef   OS_EVR_THFLAGS
 #define   OS_EVR_THFLAGS        OS_EVR_THREAD
 #endif
-#ifndef   OS_EVR_THFLAGS_FILTER
-#define   OS_EVR_THFLAGS_FILTER OS_EVR_THREAD_FILTER
-#endif
 #ifndef   OS_EVR_WAIT
 #define   OS_EVR_WAIT           OS_EVR_THREAD
 #endif
-#ifndef   OS_EVR_WAIT_FILTER
-#define   OS_EVR_WAIT_FILTER    OS_EVR_THREAD_FILTER
-#endif
 
+#ifdef   _RTE_
 #include "RTE_Components.h"
+#endif
 
 #ifdef    RTE_Compiler_EventRecorder
 
@@ -1280,7 +1276,7 @@ extern void EvrRtxMutexAcquire (osMutexId_t mutex_id, uint32_t timeout);
 #if (!defined(EVR_RTX_DISABLE) && (OS_EVR_MUTEX != 0) && !defined(EVR_RTX_MUTEX_ACQUIRE_PENDING_DISABLE))
 extern void EvrRtxMutexAcquirePending (osMutexId_t mutex_id, uint32_t timeout);
 #else
-#define EvrRtxMutexAcquirePending(mutex_id, timeout);
+#define EvrRtxMutexAcquirePending(mutex_id, timeout)
 #endif
 
 /**
@@ -1433,7 +1429,7 @@ extern void EvrRtxSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeo
 #if (!defined(EVR_RTX_DISABLE) && (OS_EVR_SEMAPHORE != 0) && !defined(EVR_RTX_SEMAPHORE_ACQUIRE_PENDING_DISABLE))
 extern void EvrRtxSemaphoreAcquirePending (osSemaphoreId_t semaphore_id, uint32_t timeout);
 #else
-#define EvrRtxSemaphoreAcquirePending(semaphore_id, timeout);
+#define EvrRtxSemaphoreAcquirePending(semaphore_id, timeout)
 #endif
 
 /**
